@@ -5,13 +5,28 @@ import "@fortune-sheet/react/dist/index.css";
 export default function App() {
   const [data, setData] = useState([
     {
-      name: "Página 1",
+      name: "Page 1",
       celldata: [
-        { r: 0, c: 0, v: "Nome" },
-        { r: 0, c: 1, v: "Idade" },
-        { r: 1, c: 0, v: "João" },
-        { r: 1, c: 1, v: 28 },
+        { r: 0, c: 0, v: { v: "Name" } },
+        { r: 0, c: 1, v: { v: "Age" } },
+        { r: 1, c: 0, v: { v: "João" } },
+        { r: 1, c: 1, v: { v: 28 } },
       ],
+      row: 50,
+      column: 26,
+      config: {},
+    },
+    {
+      name: "Page 2",
+      celldata: [
+        { r: 0, c: 0, v: { v: "Name" } },
+        { r: 0, c: 1, v: { v: "Age" } },
+        { r: 1, c: 0, v: { v: "Luiz" } },
+        { r: 1, c: 1, v: { v: 28 } },
+      ],
+      row: 50,
+      column: 26,
+      config: {},
     },
   ]);
 
@@ -19,10 +34,7 @@ export default function App() {
     <div style={{ height: "90vh", width: "100%" }}>
       <Workbook
         data={data}
-        onChange={(updated) => {
-          setData(updated);
-          console.log("Planilha atualizada:", updated);
-        }}
+        onChange={setData}
         showToolbar
         showSheetsBar
       />
