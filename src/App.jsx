@@ -10,23 +10,33 @@ export default function App() {
         { r: 0, c: 0, v: { v: "Name" } },
         { r: 0, c: 1, v: { v: "Age" } },
         { r: 1, c: 0, v: { v: "João" } },
-        { r: 1, c: 1, v: { v: 28 } },
+        { r: 1, c: 1, v: 28 },
       ],
       row: 50,
       column: 26,
-      config: {},
+      config: {
+        cellConfig: {
+          "0_0": { editable: false },
+          "0_1": { editable: false },
+        },
+      },
     },
+
     {
       name: "Page 2",
       celldata: [
         { r: 0, c: 0, v: { v: "Name" } },
         { r: 0, c: 1, v: { v: "Age" } },
-        { r: 1, c: 0, v: { v: "Luiz" } },
-        { r: 1, c: 1, v: { v: 28 } },
+        { r: 1, c: 0, v: "Luiz" },
+        { r: 1, c: 1, v: 28 },
       ],
       row: 50,
       column: 26,
-      config: {},
+      config: {
+        cellConfig: {
+          "1_1": { editable: false },
+        },
+      },
     },
   ]);
 
