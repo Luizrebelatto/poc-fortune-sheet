@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Workbook } from "@fortune-sheet/react";
 import "@fortune-sheet/react/dist/index.css";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function App() {
   const [data, setData] = useState([
@@ -10,7 +12,7 @@ export default function App() {
         { r: 0, c: 0, v: { v: "Name" } },
         { r: 0, c: 1, v: { v: "Age" } },
         { r: 1, c: 0, v: { v: "João" } },
-        { r: 1, c: 1, v: { v: 28 } },
+        { r: 1, c: 1, v: 28 },
       ],
       row: 50,
       column: 26,
@@ -23,7 +25,6 @@ export default function App() {
     },
   ]);
 
-  // Exporta a planilha para JSON
   const exportJSON = () => {
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
@@ -35,17 +36,58 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
-  // Importa JSON para o Workbook
   const importJSON = (event) => {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (e) => {
-      const json = JSON.parse(e.target.result);
-      setData(json); // Atualiza o Workbook
+      let json = JSON.parse(e.target.result);
+
+      if (!Array.isArray(json)) {
+        json = [
+          { name: "Sheet1", celldata: [], row: 50, column: 26, config: {} },
+        ];
+      }
+
+      const formattedData = json.map((sheet) => ({
+        name: sheet.name || "Sheet",
+        celldata: sheet.celldata || [],
+        row: sheet.row || 50,
+        column: sheet.column || 26,
+        config: sheet.config || {},
+      }));
+
+      setData(formattedData);
     };
     reader.readAsText(file);
   };
+
+  const exportToExcel = () => {
+    const wb = XLSX.utils.book_new();
+
+    data.forEach((sheet) => {
+      const maxRow = Math.max(...sheet.celldata.map((c) => c.r)) + 1;
+      const maxCol = Math.max(...sheet.celldata.map((c) => c.c)) + 1;
+
+      const wsData = Array.from({ length: maxRow }, () =>
+        Array.from({ length: maxCol }, () => "")
+      );
+
+      sheet.celldata.forEach((cell) => {
+        wsData[cell.r][cell.c] = cell.v.v;
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, sheet.name);
+    });
+
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    saveAs(
+      new Blob([wbout], { type: "application/octet-stream" }),
+      "planilha.xlsx"
+    );
+  };
+
 
   return (
     <div style={{ padding: 20 }}>
@@ -57,6 +99,10 @@ export default function App() {
           onChange={importJSON}
           style={{ marginLeft: 10 }}
         />
+
+        <button onClick={exportToExcel} style={{ marginLeft: 20 }}>
+          Exportar Excel
+        </button>
       </div>
 
       <div style={{ height: "80vh", width: "100%" }}>
