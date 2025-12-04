@@ -44,9 +44,7 @@ export default function App() {
       let json = JSON.parse(e.target.result);
 
       if (!Array.isArray(json)) {
-        json = [
-          { name: "Sheet1", celldata: [], row: 50, column: 26, config: {} },
-        ];
+        throw new Error("The JSON file must be an array of spreadsheets.");
       }
 
       const formattedData = json.map((sheet) => ({
