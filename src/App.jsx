@@ -63,7 +63,7 @@ export default function App() {
   };
 
   const exportToExcel = () => {
-    const wb = XLSX.utils.book_new();
+    const workBook = XLSX.utils.book_new();
 
     data.forEach((sheet) => {
       const maxRow = Math.max(...sheet.celldata.map((c) => c.r)) + 1;
@@ -78,12 +78,12 @@ export default function App() {
       });
 
       const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, sheet.name);
+      XLSX.utils.book_append_sheet(workBook, ws, sheet.name);
     });
 
-    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const workBookWrite = XLSX.write(workBook, { bookType: "xlsx", type: "array" });
     saveAs(
-      new Blob([wbout], { type: "application/octet-stream" }),
+      new Blob([workBookWrite], { type: "application/octet-stream" }),
       "planilha.xlsx"
     );
   };
